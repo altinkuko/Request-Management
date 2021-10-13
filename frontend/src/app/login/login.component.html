@@ -1,0 +1,13 @@
+<app-header></app-header>
+<div class="wrapper fadeInDown mt-5">
+  <div id="formContent">
+  </div>
+  <div>
+    <form name='f' class="login" action="login" method='POST'>
+      <div *ngIf="error" class="alert alert-danger" role="alert">{{ error }}</div>
+      <input type="text" id="username" [(ngModel)]="username" name="username" placeholder="Username" required="required">
+      <input type="password" id="password"[(ngModel)]="password" name="password" placeholder="Password" [required]="'Please fill this field'">
+      <button type="submit" (click)="doLogin()" name="submit">Login</button>
+    </form>
+  </div>
+</div>

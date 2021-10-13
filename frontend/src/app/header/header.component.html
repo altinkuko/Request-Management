@@ -1,0 +1,9 @@
+<ul>
+  <li><a href="/" class="active">Home</a></li>
+  <li><a *ngIf="isUserLoggedIn()" href="/requests" class="active">Requests</a></li>
+  <div class="topnav-right">
+    <li> <a *ngIf="isUserLoggedIn()" href="/logout" class="">Log Out</a></li>
+    <li> <a *ngIf="!isUserLoggedIn()" href="/login" class="">Log In</a></li>
+  </div>
+</ul>
+
