@@ -29,6 +29,14 @@ public class RequestDTO {
 
     private String notes;
 
+    private String createdBy;
+
+    private Date createdOn;
+
+    private String modifiedBy;
+
+    private Date modifiedOn;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -58,6 +66,10 @@ public class RequestDTO {
                 .notes(requestEntity.getNotes())
                 .startDate(requestEntity.getStartDate())
                 .status(requestEntity.getStatus())
+                .createdBy(requestEntity.getCreatedBy())
+                .createdOn(requestEntity.getCreatedDate())
+                .modifiedBy(requestEntity.getLastModifiedBy())
+                .modifiedOn(requestEntity.getLastModifiedDate())
                 .resourceDTOS(ResourceDTO.toDtoList(requestEntity.getResourceEntities()))
                 .build();
 

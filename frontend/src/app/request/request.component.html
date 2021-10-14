@@ -1,2 +1,85 @@
 <app-header></app-header>
-<p>request works!</p>
+<div class="container mt-3">
+  <!--  <table class="mat-elevation-z8">-->
+  <!--    <tr>-->
+  <!--      <th>Id</th>-->
+  <!--      <th>Area of Interest</th>-->
+  <!--      <th>Status</th>-->
+  <!--      <th>Start Date</th>-->
+  <!--      <th>End Date</th>-->
+  <!--      <th>Resource</th>-->
+  <!--    </tr>-->
+  <!--    <tr *ngFor="let request of requests">-->
+  <!--      <td>{{request.id}}</td>-->
+  <!--      <td>{{request.areaOfInterest}}</td>-->
+  <!--      <td>{{request.status}}</td>-->
+  <!--      <td>{{request.startDate}}</td>-->
+  <!--      <td>{{request.endDate}}</td>-->
+  <!--      <td *ngFor="let resource of request.resourceDTOS">-->
+  <!--      {{resource.seniority}}: <a *ngFor="let skill of resource.skillDTOS"> {{skill.skill}}, </a> </td>-->
+  <!--    </tr>-->
+  <!--  </table>-->
+  <mat-table #table [dataSource]="requests" matSort>
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> ID</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="areaOfInterest">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Area of Interest</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.areaOfInterest}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="startDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.startDate}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="endDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> End Date</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.endDate }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.status }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="createdBy">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Created By</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.createdBy }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="createdOn">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Created on</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.createdOn }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="modifiedBy">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Modified By</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.modifiedBy }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="modifiedOn">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Modified On</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.modifiedOn }} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="resources">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Resources</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button class="mat-button"
+                (click)="OpenModal(element)"
+        > Resources
+        </button>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="edit">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Edit</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="Click to Edit" class="iconbutton" color="primary">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Click to Delete" class="iconbutton"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+</div>

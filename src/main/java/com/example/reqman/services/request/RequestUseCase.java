@@ -75,7 +75,7 @@ public class RequestUseCase implements RequestCreate, RequestByUser, DeleteReque
         RequestEntity entity = requestEntityRepository.findById(requestDTO.getId()).
                 orElseThrow(() -> new NotFoundException("Not Found"));
         if (entity.getStatus() == Status.IN_PROGRESS
-                && entity.getLastModifiedBy() != getAuthentication.getUser().getUsername())
+                && !entity.getLastModifiedBy().equals(getAuthentication.getUser().getUsername()))
             return "This request can not modified  by you. Please contact " + entity.getLastModifiedBy();
         else {
             RequestEntity finalEntity = RequestDTO.toEntity(requestDTO);

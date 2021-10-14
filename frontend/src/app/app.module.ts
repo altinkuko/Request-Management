@@ -14,6 +14,11 @@ import { RequestComponent } from './request/request.component';
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {HttpInterceptorService} from "./services/http-interceptor.service";
 import { HeaderComponent } from './header/header.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatSortModule} from "@angular/material/sort";
+import {MatIconModule} from "@angular/material/icon";
+import { ShowResourceComponent } from './show-resource/show-resource.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -22,17 +27,22 @@ import { HeaderComponent } from './header/header.component';
     HomeComponent,
     LogoutComponent,
     RequestComponent,
-    HeaderComponent
+    HeaderComponent,
+    ShowResourceComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatFormFieldModule,
-        MatCardModule,
-        FormsModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatCardModule,
+    FormsModule,
+    MatTableModule,
+    MatSortModule,
+    MatIconModule,
+    MatDialogModule,
+  ],
   providers: [
     {
       provide:HTTP_INTERCEPTORS, useClass:HttpInterceptorService, multi:true

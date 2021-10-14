@@ -37,8 +37,5 @@ public class HomeController {
         }
     }
 
-//    @GetMapping("/login")
-//    public void login(){}
-
 }
 

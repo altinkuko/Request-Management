@@ -1,3 +1,5 @@
+import {_Resource} from "./resource";
+
 export interface _Request {
   id: number;
 
@@ -12,4 +14,14 @@ export interface _Request {
   status: string;
 
   areaOfInterest: string;
+
+  createdBy: String;
+
+  createdOn: Date;
+
+  modifiedBy: String;
+
+  modifiedOn: Date;
+
+  resourceDTOS: _Resource[];
 }
