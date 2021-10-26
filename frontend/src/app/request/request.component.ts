@@ -14,7 +14,6 @@ import {Status} from "../models/status";
 import {AreaOfInterest} from "../models/area-of-interest";
 import {Seniority} from "../models/seniority";
 import {SkillsService} from "../services/skills.service";
-import {error} from "@angular/compiler/src/util";
 import {AlertService} from "../services/alert.service";
 
 @Component({
