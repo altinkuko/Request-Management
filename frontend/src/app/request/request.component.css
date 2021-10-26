@@ -1,3 +1,21 @@
 table {
   width: 100%;
 }
+.form-control {
+  border: none;
+  box-shadow: none;
+}
+
+.form-horizontal {
+  margin-top: 80px;
+}
+
+form {
+  height: auto;
+  width: 500px;
+  margin: 0 auto;
+}
+
+#details {
+  margin-top: 10px;
+}

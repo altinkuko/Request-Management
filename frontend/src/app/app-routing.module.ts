@@ -9,12 +9,17 @@ import {HomeComponent} from "./home/home.component";
 import {LogoutComponent} from "./logout/logout.component";
 import {RequestComponent} from "./request/request.component";
 import {AuthGuardService} from "./services/auth-guard.service";
+import {CreateRequestComponent} from "./actions/create-request/create-request.component";
+import {MatNativeDateModule} from "@angular/material/core";
+import {EditRequestComponent} from "./actions/edit-request/edit-request.component";
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch: 'full'},
   {path: 'login', component: LoginComponent, data: {title: 'Login'}},
   {path:'logout', component:LogoutComponent},
-  {path:'requests', component:RequestComponent, canActivate: [AuthGuardService]}
+  {path:'requests', component:RequestComponent, canActivate: [AuthGuardService]},
+  {path:'create-request', component:CreateRequestComponent, canActivate: [AuthGuardService]},
+  {path:'edit-request', component:EditRequestComponent, canActivate:[AuthGuardService]}
 ];
 
 @NgModule({
@@ -24,7 +29,8 @@ const routes: Routes = [
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
-    CommonModule],
+    CommonModule,
+    MatNativeDateModule],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

@@ -19,7 +19,9 @@ public class RequestFilterParam {
 
     private String areaOfInterest;
 
-    private ResourceFilterParam resourceFilterParam;
+    private String seniority;
+
+    private String skill;
 
     private String username;
 }

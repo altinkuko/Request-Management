@@ -13,9 +13,10 @@ export class LoginService {
   login(username: string, password: string) {
     console.log(username, password)
     return this.http.post<any>("http://localhost:8080/login", {username,password}).pipe(
-      map(() => {
+      map(auth => {
         sessionStorage.setItem("basicAuth", this.createBasicAuthToken(username,password))
         sessionStorage.setItem("username", username)
+        sessionStorage.setItem('role', auth.authorities[0].authority)
       })
     );
   }
@@ -32,5 +33,6 @@ export class LoginService {
   logOut() {
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("basicAuth");
+    sessionStorage.removeItem("role");
   }
 }

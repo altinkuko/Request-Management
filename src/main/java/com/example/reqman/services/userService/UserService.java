@@ -1,9 +1,11 @@
 package com.example.reqman.services.userService;
 
+import com.example.reqman.database.entity.Roles;
 import com.example.reqman.database.entity.User;
 import com.example.reqman.database.repository.UserRepository;
 import com.example.reqman.security.UserDetailImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,5 +33,10 @@ public class UserService implements UserDetailsService, GetAuthentication {
 
     public boolean isAuthenticated() {
         return SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+    }
+
+    public static boolean isAdmin(Authentication authentication){
+        return authentication.getAuthorities().stream().allMatch(
+                role-> role.getAuthority().equals(Roles.ROLE_ADMIN.toString()));
     }
 }

@@ -4,7 +4,6 @@ import com.example.reqman.services.userService.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,7 +30,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().
-                authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/login", "/").permitAll()
+                authorizeRequests()
+                .antMatchers("/login", "/").permitAll()
                 .antMatchers("/api/**").hasAnyRole("ADMIN", "REQUESTER")
                 .and().formLogin().loginPage("http://localhost:4200/login")
                 .successForwardUrl("http://localhost:4200/")

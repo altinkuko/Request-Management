@@ -1,0 +1,34 @@
+<div class="container-fluid">
+<mat-table #table [dataSource]="resources" matSort>
+  <ng-container matColumnDef="resourceId">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.resourceId}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="note">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Note </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.note}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="seniority">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Seniority </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.seniority }} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="skills">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Skills </mat-header-cell>
+    <mat-cell *matCellDef="let element"> <span *ngFor="let skill of element.skillDTOS"> {{ skill.skill }}, </span> </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+  <br>
+  <span style=float:right>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="CloseDialog()"
+          >
+            Close
+          </button>
+        </span>
+</div>

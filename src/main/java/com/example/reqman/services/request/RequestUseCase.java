@@ -12,8 +12,10 @@ import com.example.reqman.services.request.filterRequest.FilterRequest;
 import com.example.reqman.services.request.getRequest.RequestByUser;
 import com.example.reqman.services.request.updateRequest.UpdateRequest;
 import com.example.reqman.services.userService.GetAuthentication;
+import com.example.reqman.services.userService.UserService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -22,7 +24,9 @@ import javax.persistence.criteria.*;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,31 +40,42 @@ public class RequestUseCase implements RequestCreate, RequestByUser, DeleteReque
     private final UserRepository userRepository;
 
     @Override
-    public RequestDTO createRequest(final RequestDTO requestDTO) {
-        if (requestDTO.getStatus() == null)
-            requestDTO.setStatus(Status.CREATED);
-        RequestEntity requestEntity = RequestDTO.toEntity(requestDTO);
-        List<ResourceEntity> resourceEntities = new ArrayList<>();
-        requestDTO.getResourceDTOS().forEach(resourceDTO -> {
-            resourceEntities.add(ResourceEntity.builder()
-                    .note(resourceDTO.getNote())
-                    .seniority(resourceDTO.getSeniority())
-                    .requestEntity(requestEntity)
-                    .skillEntities(SkillDTO.toEntityList(resourceDTO.getSkillDTOS()))
-                    .build());
-        });
-        requestEntity.setCreatedBy(getAuthentication.getUser().getUsername());
-        requestEntity.setCreatedDate(Date.valueOf(LocalDate.now()));
-        requestEntity.setResourceEntities(resourceEntities);
-        requestEntityRepository.save(requestEntity);
-        sendEmail(requestEntity);
-        return RequestDTO.toDto(requestEntity);
+    public ErrorMessages createRequest(final RequestDTO requestDTO) {
+        try {
+            if (requestDTO.getResourceDTOS() == null)
+                requestDTO.setResourceDTOS(new ArrayList<>());
+            if (requestDTO.getStatus() == null)
+                requestDTO.setStatus(Status.CREATED);
+            RequestEntity requestEntity = RequestDTO.toEntity(requestDTO);
+            List<ResourceEntity> resourceEntities = new ArrayList<>();
+            requestDTO.getResourceDTOS().forEach(resourceDTO -> {
+                resourceEntities.add(ResourceEntity.builder()
+                        .note(resourceDTO.getNote())
+                        .seniority(resourceDTO.getSeniority())
+                        .requestEntity(requestEntity)
+                        .skillEntities(SkillDTO.toEntityList(resourceDTO.getSkillDTOS()))
+                        .build());
+            });
+            requestEntity.setCreatedBy(getAuthentication.getUser().getUsername());
+            requestEntity.setCreatedDate(Date.valueOf(LocalDate.now()));
+            requestEntity.setResourceEntities(resourceEntities);
+            requestEntityRepository.save(requestEntity);
+            //sendEmail(requestEntityRepository.save(requestEntity));
+            return new ErrorMessages("Request Created");
+        } catch (Exception e) {
+            return new ErrorMessages(e.getMessage());
+        }
+
     }
 
     @Override
     public List<RequestDTO> getRequestByUser() {
-        return RequestDTO.toDtoList(
-                requestEntityRepository.findAllByCreatedBy(getAuthentication.getUser().getUsername()));
+        User user = getAuthentication.getUser();
+        if (user.getRole() == Roles.ROLE_ADMIN)
+            return RequestDTO.toDtoList(requestEntityRepository.findAll());
+        else
+            return RequestDTO.toDtoList(
+                    requestEntityRepository.findAllByCreatedBy(user.getUsername()));
     }
 
     @Override
@@ -71,12 +86,12 @@ public class RequestUseCase implements RequestCreate, RequestByUser, DeleteReque
 
 
     @Override
-    public String updateRequest(RequestDTO requestDTO) throws NotFoundException {
+    public ErrorMessages updateRequest(RequestDTO requestDTO) throws NotFoundException {
         RequestEntity entity = requestEntityRepository.findById(requestDTO.getId()).
                 orElseThrow(() -> new NotFoundException("Not Found"));
-        if (entity.getStatus() == Status.IN_PROGRESS
+        if (entity.getLastModifiedBy() != null && entity.getStatus() == Status.IN_PROGRESS
                 && !entity.getLastModifiedBy().equals(getAuthentication.getUser().getUsername()))
-            return "This request can not modified  by you. Please contact " + entity.getLastModifiedBy();
+            return new ErrorMessages("This request can not modified  by you. Please contact " + entity.getLastModifiedBy());
         else {
             RequestEntity finalEntity = RequestDTO.toEntity(requestDTO);
             List<ResourceEntity> resourceEntities = new ArrayList<>();
@@ -90,7 +105,7 @@ public class RequestUseCase implements RequestCreate, RequestByUser, DeleteReque
             finalEntity.setLastModifiedBy(getAuthentication.getUser().getUsername());
             finalEntity.setLastModifiedDate(Date.valueOf(LocalDate.now()));
             requestEntityRepository.save(finalEntity);
-            return "Updated";
+            return new ErrorMessages("Updated");
         }
     }
 
@@ -114,19 +129,24 @@ public class RequestUseCase implements RequestCreate, RequestByUser, DeleteReque
         if (requestFilterParam.getStatus() != null)
             predicates.add(criteriaBuilder.equal(request.get("status"),
                     Status.valueOf(requestFilterParam.getStatus())));
-        if (requestFilterParam.getResourceFilterParam() != null) {
-            if (requestFilterParam.getResourceFilterParam().getSeniority() != null)
-                predicates.add(criteriaBuilder.equal(requestResourceJoin.get("seniority"),
-                        requestFilterParam.getResourceFilterParam().getSeniority()));
-            if (requestFilterParam.getResourceFilterParam().getSkillFilterParam() != null)
-                predicates.add(criteriaBuilder.equal(resourceSkillJoin.get("skill"),
-                        requestFilterParam.getResourceFilterParam().getSkillFilterParam().getSkill()));
-        }
-        if (requestFilterParam.getUsername() != null)
-            predicates.add(criteriaBuilder.equal(request.get("createdBy"), requestFilterParam.getUsername()));
+        if (requestFilterParam.getSeniority() != null)
+            predicates.add(criteriaBuilder.equal(requestResourceJoin.get("seniority"),
+                   Seniority.valueOf(requestFilterParam.getSeniority())));
+        if (requestFilterParam.getSkill() != null)
+            predicates.add(criteriaBuilder.equal(resourceSkillJoin.get("skill"),
+                    requestFilterParam.getSkill()));
+        if (requestFilterParam.getUsername() == null
+        && !UserService.isAdmin(SecurityContextHolder.getContext().getAuthentication()))
+            predicates.add(criteriaBuilder.equal(request.get("createdBy"),
+                    SecurityContextHolder.getContext().getAuthentication().getName()));
+        if (requestFilterParam.getUsername()!=null)
+            predicates.add(criteriaBuilder.equal(request.get("createdBy"),
+                    requestFilterParam.getUsername()));
+
         criteriaQuery.where(predicates.toArray(Predicate[]::new));
         TypedQuery<RequestEntity> query = entityManager.createQuery(criteriaQuery);
-        return RequestDTO.toDtoList(query.getResultList());
+        Set<RequestEntity> result = new HashSet<>(query.getResultList());
+        return RequestDTO.toDtoList(new ArrayList<>(result));
     }
 
     public List<String> adminEmails() {
