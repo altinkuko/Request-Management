@@ -1,6 +1,6 @@
 <app-header></app-header>
 <div style="margin-left:20px;">
-  <div class="text-center mat-toolbar shadow">Add New Request</div>
+  <div class="text-center mat-toolbar shadow">Edit Request</div>
   <div class="container">
     <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="form-control">
       <p>
@@ -26,12 +26,14 @@
       </p>
       <p>
         <mat-form-field appearance="outline" class="mat-input-element">
-          <mat-label>Notes</mat-label>
+          <mat-label>Comments</mat-label>
           <input matInput formControlName="notes">
+                    <mat-error *ngIf="checkError('notes', 'required', editForm)">Please insert a comment
+                    </mat-error>
         </mat-form-field>
       </p>
       <p>
-        <mat-form-field>
+        <mat-form-field *ngIf="isAdmin()">
           <mat-select placeholder="Status" formControlName="status">
             <mat-option *ngFor="let status of statuses" [value]="status">
               {{status}}

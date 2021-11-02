@@ -4,7 +4,6 @@ import {_Skill} from "../../models/skill";
 import {SkillsService} from "../../services/skills.service";
 import {Seniority} from "../../models/seniority";
 import {MatDialogRef} from "@angular/material/dialog";
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-add-resource',
@@ -39,7 +38,7 @@ export class AddResourceComponent implements OnInit {
 
   onSubmit() {
     sessionStorage.setItem('newResource', JSON.stringify(this.resourceForm.value))
-    this.CloseDialog()
+    this.closeDialog()
   }
 
   public checkError = (controlName: string, errorName: string, form: FormGroup) => {
@@ -64,7 +63,6 @@ export class AddResourceComponent implements OnInit {
 
   onChangeSkill(i:number){
     (this.resourceForm.get('skillDTOS') as FormArray).setControl(i, this.skillsForm[i]);
-    console.log(this.resourceForm.get('skillDTOS'))
   }
 
   removeSkill(i:number){
@@ -73,7 +71,7 @@ export class AddResourceComponent implements OnInit {
     (this.resourceForm.get('skillDTOS') as FormArray).removeAt(i)
   }
 
-  CloseDialog() {
+  closeDialog() {
     this.popUp.close(false)
   }
 }

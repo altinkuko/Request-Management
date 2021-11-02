@@ -2,8 +2,8 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {_Request} from "../../models/request";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {RequestService} from "../../services/request.service";
-import {RequestComponent} from "../../request/request.component";
 import {Router} from "@angular/router";
+import {AlertService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-delete-request',
@@ -17,6 +17,7 @@ export class DeleteRequestComponent implements OnInit {
   constructor(private requestService: RequestService,
               private router: Router,
               private popUp: MatDialogRef<DeleteRequestComponent>,
+              private alert:AlertService,
               @Inject(MAT_DIALOG_DATA) data: any) {
     this.request = data.request;
   }
@@ -30,8 +31,10 @@ export class DeleteRequestComponent implements OnInit {
   }
 
   deleteRequest() {
-    this.requestService.deleteRequest(this.request).subscribe(() => {
-      this.CloseDialog()
+    this.requestService.deleteRequest(this.request).subscribe(data => {
+      this.CloseDialog();
+      // @ts-ignore
+      this.alert.showError(data.message)
     })
   }
 }

@@ -30,6 +30,7 @@ import { DeleteRequestComponent } from './actions/delete-request/delete-request.
 import { EditRequestComponent } from './actions/edit-request/edit-request.component';
 import { AddResourceComponent } from './actions/add-resource/add-resource.component';
 import { ErrorsComponent } from './errors/errors.component';
+import { CreateSkillComponent } from './actions/create-skill/create-skill.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { ErrorsComponent } from './errors/errors.component';
     DeleteRequestComponent,
     EditRequestComponent,
     AddResourceComponent,
-    ErrorsComponent
+    ErrorsComponent,
+    CreateSkillComponent
   ],
     imports: [
         BrowserModule,

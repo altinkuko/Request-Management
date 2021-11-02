@@ -6,7 +6,7 @@ import com.example.reqman.database.repository.ResourceRepository;
 import com.example.reqman.database.repository.UserRepository;
 import com.example.reqman.mapper.*;
 import com.example.reqman.services.email.EmailService;
-import com.example.reqman.services.request.createRequest.RequestCreate;
+import com.example.reqman.services.request.createRequest.CreateRequest;
 import com.example.reqman.services.request.deleteRequest.DeleteRequest;
 import com.example.reqman.services.request.filterRequest.FilterRequest;
 import com.example.reqman.services.request.getRequest.RequestByUser;
@@ -23,14 +23,11 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class RequestUseCase implements RequestCreate, RequestByUser, DeleteRequest, UpdateRequest, FilterRequest {
+public class RequestUseCase implements CreateRequest, RequestByUser, DeleteRequest, UpdateRequest, FilterRequest {
 
     private final RequestRepository requestEntityRepository;
     private final ResourceRepository resourceRepository;
@@ -79,9 +76,21 @@ public class RequestUseCase implements RequestCreate, RequestByUser, DeleteReque
     }
 
     @Override
-    public void deleteRequest(RequestDTO requestDTO) {
-        resourceRepository.deleteAll(resourceRepository.findAllByRequestEntity(RequestDTO.toEntity(requestDTO)));
-        requestEntityRepository.delete(RequestDTO.toEntity(requestDTO));
+    public ErrorMessages deleteRequest(RequestDTO requestDTO) {
+        ErrorMessages errorMessage = new ErrorMessages();
+        Optional<RequestEntity> entity = requestEntityRepository.findById(requestDTO.getId());
+        if (entity.isPresent()) {
+            if (entity.get().getLastModifiedBy() != null
+                    && entity.get().getStatus() == Status.IN_PROGRESS
+                    && !entity.get().getLastModifiedBy().equals(getAuthentication.getUser().getUsername())) {
+                errorMessage.setMessage("This request can not modified by you. Please contact " + entity.get().getLastModifiedBy());
+            } else {
+                resourceRepository.deleteAll(resourceRepository.findAllByRequestEntity(RequestDTO.toEntity(requestDTO)));
+                requestEntityRepository.delete(RequestDTO.toEntity(requestDTO));
+                errorMessage.setMessage("Deleted");
+            }
+        }
+        return errorMessage;
     }
 
 
@@ -131,18 +140,21 @@ public class RequestUseCase implements RequestCreate, RequestByUser, DeleteReque
                     Status.valueOf(requestFilterParam.getStatus())));
         if (requestFilterParam.getSeniority() != null)
             predicates.add(criteriaBuilder.equal(requestResourceJoin.get("seniority"),
-                   Seniority.valueOf(requestFilterParam.getSeniority())));
+                    Seniority.valueOf(requestFilterParam.getSeniority())));
         if (requestFilterParam.getSkill() != null)
             predicates.add(criteriaBuilder.equal(resourceSkillJoin.get("skill"),
                     requestFilterParam.getSkill()));
         if (requestFilterParam.getUsername() == null
-        && !UserService.isAdmin(SecurityContextHolder.getContext().getAuthentication()))
+                && !UserService.isAdmin(SecurityContextHolder.getContext().getAuthentication()))
             predicates.add(criteriaBuilder.equal(request.get("createdBy"),
                     SecurityContextHolder.getContext().getAuthentication().getName()));
-        if (requestFilterParam.getUsername()!=null)
-            predicates.add(criteriaBuilder.equal(request.get("createdBy"),
-                    requestFilterParam.getUsername()));
-
+        if (requestFilterParam.getUsername() != null)
+            predicates.add(criteriaBuilder.like(request.get("createdBy"),
+                    "%"+requestFilterParam.getUsername()+"%"));
+        if (requestFilterParam.getNotes() != null)
+            predicates.add(criteriaBuilder.like(request.get("notes"),"%"+requestFilterParam.getNotes()+"%"));
+        if (requestFilterParam.getDescription() !=null)
+            predicates.add(criteriaBuilder.like(request.get("description"), "%"+requestFilterParam.getDescription()+"%"));
         criteriaQuery.where(predicates.toArray(Predicate[]::new));
         TypedQuery<RequestEntity> query = entityManager.createQuery(criteriaQuery);
         Set<RequestEntity> result = new HashSet<>(query.getResultList());

@@ -1,7 +1,9 @@
 <app-header></app-header>
 
-<button type="button" class="mt-3" mat-flat-button color="primary">
+<button type="button" class="mt-3" mat-flat-button color="accent">
   <span routerLink="/create-request" class="m-lg-auto">Create Request</span></button>
+<button type="button" class="mt-3 m-lg-3" mat-flat-button color="accent">
+  <span routerLink="/create-skill" class="m-lg-auto">Create Skill</span></button>
 <div class="container mt-3" [formGroup]="requestFilterForm"> <h2 class="align-self-center">Filter Parameters</h2>
   <p>
     <mat-form-field>
@@ -43,8 +45,8 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Note</mat-label>
-      <input matInput formControlName="notes">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description">
     </mat-form-field>
     <mat-form-field appearance="outline" class="m-lg-3" *ngIf="isAdmin()">
       <mat-label>Username</mat-label>
@@ -109,7 +111,7 @@
       <mat-header-cell *matHeaderCellDef > Resources</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <button
-                (click)="OpenResources(element)"
+          (click)="OpenResources(element)"
         > Resources
         </button>
       </mat-cell>
@@ -117,9 +119,9 @@
     <ng-container matColumnDef="edit">
       <mat-header-cell *matHeaderCellDef > Edit</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <button mat-mini-fab matTooltip="Click to Edit" class="iconbutton" color="accent"
+        <button mat-mini-fab matTooltip="Click to Edit" class="iconbutton" color=""
         (click)="openEdit(element)">
-          <mat-icon>edit</mat-icon>
+          <mat-icon color="primary">edit</mat-icon>
         </button>
         <button mat-mini-fab matTooltip="Click to Delete" class="iconbutton" color="warn"
         (click)="openDelete(element)">

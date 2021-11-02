@@ -11,6 +11,7 @@ import {SkillsService} from "../../services/skills.service";
 import {_Skill} from "../../models/skill";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorsComponent} from "../../errors/errors.component";
+import {AlertService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-create-request',
@@ -27,7 +28,6 @@ export class CreateRequestComponent implements OnInit {
   statuses = Object.values(Status);
   areaOfInterests = Object.values(AreaOfInterest)
   seniority = Object.values(Seniority)
-  skillForm:FormGroup
   skillsForm: FormGroup[]=[]
 
 
@@ -35,7 +35,7 @@ export class CreateRequestComponent implements OnInit {
               private router: Router,
               private formBuilder: FormBuilder,
               private skillService:SkillsService,
-              private matDialog:MatDialog) {
+              private alert:AlertService) {
     this.addRequestForm = new FormGroup({
       description: new FormControl(null, [Validators.required]),
       startDate: new FormControl(null, [Validators.required]),
@@ -45,9 +45,6 @@ export class CreateRequestComponent implements OnInit {
       areaOfInterest: new FormControl('', [Validators.required]),
 
     });
-    this.skillForm = new FormGroup({
-      skill: new FormControl(null, [Validators.required])
-    });
     this.resourceForm = this.formBuilder.group({
       note: [],
       seniority: [null, Validators.required],
@@ -55,8 +52,6 @@ export class CreateRequestComponent implements OnInit {
     });
     this.request = this.addRequestForm.value;
   }
-
-  get skillsDTO(){return this.resourceForm.controls.skillDTOS as FormArray}
 
   ngOnInit(): void {
     this.skillsForm.push(this.createSkillForm())
@@ -67,10 +62,8 @@ export class CreateRequestComponent implements OnInit {
     this.request = this.addRequestForm.value
     this.request.resourceDTOS = this.resources
     this.requestService.createRequest(this.request).subscribe(res => {
-      this.matDialog.open(ErrorsComponent,{
-        data:res.message
-      })
-      this.router.navigate(['requests'])
+      this.router.navigate(['requests']);
+      this.alert.showError(res.message)
     })
   }
 
@@ -88,7 +81,6 @@ export class CreateRequestComponent implements OnInit {
 
   addResource() {
     this.resources.push(this.resourceForm.value)
-    console.log(this.resources)
   }
 
   removeResource(i:number) {

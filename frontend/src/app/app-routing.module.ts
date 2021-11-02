@@ -12,6 +12,7 @@ import {AuthGuardService} from "./services/auth-guard.service";
 import {CreateRequestComponent} from "./actions/create-request/create-request.component";
 import {MatNativeDateModule} from "@angular/material/core";
 import {EditRequestComponent} from "./actions/edit-request/edit-request.component";
+import {CreateSkillComponent} from "./actions/create-skill/create-skill.component";
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch: 'full'},
@@ -19,7 +20,8 @@ const routes: Routes = [
   {path:'logout', component:LogoutComponent},
   {path:'requests', component:RequestComponent, canActivate: [AuthGuardService]},
   {path:'create-request', component:CreateRequestComponent, canActivate: [AuthGuardService]},
-  {path:'edit-request', component:EditRequestComponent, canActivate:[AuthGuardService]}
+  {path:'edit-request', component:EditRequestComponent, canActivate:[AuthGuardService]},
+  {path:'create-skill', component:CreateSkillComponent, canActivate:[AuthGuardService]}
 ];
 
 @NgModule({

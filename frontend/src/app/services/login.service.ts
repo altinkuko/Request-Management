@@ -11,7 +11,6 @@ export class LoginService {
   }
 
   login(username: string, password: string) {
-    console.log(username, password)
     return this.http.post<any>("http://localhost:8080/login", {username,password}).pipe(
       map(auth => {
         sessionStorage.setItem("basicAuth", this.createBasicAuthToken(username,password))
@@ -21,7 +20,7 @@ export class LoginService {
     );
   }
 
-  createBasicAuthToken(username: string | null, password: string | null) {
+  createBasicAuthToken(username: string, password: string) {
     return 'Basic ' + window.btoa(username + ':' + password)
   }
 
@@ -31,8 +30,9 @@ export class LoginService {
   }
 
   logOut() {
-    sessionStorage.removeItem("username");
-    sessionStorage.removeItem("basicAuth");
-    sessionStorage.removeItem("role");
+    sessionStorage.clear()
+  }
+  isAdmin(){
+    return sessionStorage.getItem('role')==='ROLE_ADMIN'
   }
 }

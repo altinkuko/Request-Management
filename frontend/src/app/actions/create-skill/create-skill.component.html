@@ -1,0 +1,18 @@
+<app-header></app-header>
+
+<div class="text-center mat-toolbar shadow">Add New Skill</div>
+
+<div class="container">
+  <form [formGroup]="skillForm" (ngSubmit)="onSubmit()" class="form-control">
+    <p>
+      <mat-form-field appearance="outline" class="mat-input-element">
+        <mat-label>New Skill</mat-label>
+        <input matInput formControlName="skill">
+        <mat-error *ngIf="checkError('skill', 'required', skillForm)">Skill is required</mat-error>
+      </mat-form-field>
+    </p>
+    <button type="submit" [disabled]="!skillForm.valid"
+            mat-flat-button color="primary" aria-label="Create Skill">Create
+    </button>
+  </form>
+</div>

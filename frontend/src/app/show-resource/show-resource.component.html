@@ -14,7 +14,7 @@
   </ng-container>
   <ng-container matColumnDef="skills">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Skills </mat-header-cell>
-    <mat-cell *matCellDef="let element"> <span *ngFor="let skill of element.skillDTOS"> {{ skill.skill }}, </span> </mat-cell>
+    <mat-cell *matCellDef="let element"> <span *ngFor="let skill of element.skillDTOS">-{{skill.skill}}</span> </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -26,8 +26,7 @@
             type="button"
             mat-raised-button
             color="primary"
-            (click)="CloseDialog()"
-          >
+            (click)="CloseDialog()">
             Close
           </button>
         </span>

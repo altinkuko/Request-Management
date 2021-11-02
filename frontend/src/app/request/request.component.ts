@@ -48,7 +48,7 @@ export class RequestComponent implements OnInit {
     this.requestFilterForm = new FormGroup({
       startDate: new FormControl(null, [Validators.nullValidator]),
       endDate: new FormControl(null, [Validators.nullValidator]),
-      notes: new FormControl(null, [Validators.nullValidator]),
+      description: new FormControl(null, [Validators.nullValidator]),
       status: new FormControl(null, [Validators.nullValidator]),
       areaOfInterest: new FormControl(null, [Validators.nullValidator]),
       seniority: new FormControl(null, [Validators.nullValidator]),
@@ -67,7 +67,7 @@ export class RequestComponent implements OnInit {
     this.matDialogRef = this.matDialog.open(ShowResourceComponent, {
       width: "100vw",
       height: "auto",
-      maxWidth: "650px",
+      maxWidth: "720px",
       maxHeight: "900px",
       data: {resources: request.resourceDTOS},
       disableClose: false

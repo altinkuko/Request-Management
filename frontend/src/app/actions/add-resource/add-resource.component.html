@@ -22,21 +22,21 @@
         </mat-select>
         <mat-error *ngIf="checkError('skill', 'required', skillForm)">Skill is required</mat-error>
       </mat-form-field>
-      <a class="float-left" mat-icon-button color="primary" aria-label="Add"
-         (click)="addSKill()" matTooltip="Add">
-        <mat-icon>add_circle_outline</mat-icon>
-      </a>
       <a class="float-left" mat-icon-button color="primary" aria-label="Remove/clear"
          (click)="removeSkill(i)" matTooltip="Remove">
         <mat-icon>highlight_off</mat-icon>
       </a>
+    </a>
+    <a class="float-left" mat-icon-button color="primary" aria-label="Add"
+       (click)="addSKill()" matTooltip="Add">
+      <mat-icon>add_circle_outline</mat-icon>
     </a>
     <p>
     <button type="submit" mat-raised-button color="accent" [disabled]="!resourceForm.valid">Create</button>
     <button
       type="button"
       mat-raised-button
-      color="primary" class="m-lg-3" (click)="CloseDialog()">Cancel</button>
+      color="primary" class="m-lg-3" (click)="closeDialog()">Cancel</button>
   </p>
 </form>
 

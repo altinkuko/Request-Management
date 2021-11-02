@@ -9,8 +9,8 @@ import {Router} from "@angular/router";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  username = '';
-  password = '';
+  username:string = '';
+  password:string = '';
 
   @Input() error: string | undefined;
 
@@ -24,10 +24,10 @@ export class LoginComponent implements OnInit {
 
   doLogin(){
     this.loginService.login(this.username, this.password).subscribe(
-      data=>{
+      ()=>{
         this.router.navigate(['']);
       },
-      error=>{
+      ()=>{
         this.error="Invalid username or password"
       }
     )

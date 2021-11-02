@@ -9,7 +9,8 @@ import {AddResourceComponent} from "../add-resource/add-resource.component";
 import {RequestService} from "../../services/request.service";
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
-import {ErrorsComponent} from "../../errors/errors.component";
+import {AlertService} from "../../services/alert.service";
+import {LoginService} from "../../services/login.service";
 
 @Component({
   selector: 'app-edit-request',
@@ -31,7 +32,9 @@ export class EditRequestComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private matDialog: MatDialog,
               private requestService: RequestService,
-              private router: Router) {
+              private router: Router,
+              private alert: AlertService,
+              private loginService:LoginService) {
     this.request = JSON.parse(<string>sessionStorage.getItem('request'));
     this.id = this.request.id
     this.editForm = formBuilder.group({
@@ -57,7 +60,6 @@ export class EditRequestComponent implements OnInit {
       areaOfInterest: request.areaOfInterest,
       resourceDTOS: this.formBuilder.array(this.request.resourceDTOS)
     });
-    console.log(this.editForm)
   }
 
   onSubmit() {
@@ -77,25 +79,40 @@ export class EditRequestComponent implements OnInit {
     this.resourceDialog = this.matDialog.open(AddResourceComponent, {
       disableClose: true
     }).afterClosed().subscribe(() => {
-      let resource = JSON.parse(<string>sessionStorage.getItem('newResource'));
-      this.request.resourceDTOS.push(resource);
-      (this.editForm.get('resourceDTOS') as FormArray).push(new FormControl(resource));
-      sessionStorage.removeItem('newResource');
-      console.log(this.editForm.get('resourceDTOS'))
+      if (sessionStorage.getItem('newResource')!==null){
+        let resource = JSON.parse(<string>sessionStorage.getItem('newResource'));
+        this.request.resourceDTOS.push(resource);
+        (this.editForm.get('resourceDTOS') as FormArray).push(new FormControl(resource));
+        sessionStorage.removeItem('newResource');
+      }
     })
   }
 
   updateRequest() {
-    let request = this.editForm.value;
-    this.requestService.updateRequest(request).subscribe(
-      data => {
-        console.log(data)
-          this.matDialog.open(ErrorsComponent, {
-            data:data.message
-          })
+    console.log(this.editForm)
+    if ((this.editForm.controls['status'].value==='PENDING'|| this.editForm.controls['status'].value==='CANCELLED') &&
+      (this.editForm.controls['notes'].value===null || this.editForm.controls['notes'].value==='')){
+      this.editForm.controls['notes'].setValidators(Validators.required)
+      this.alert.showError('Please insert a comment')
+    } else {
+      let request = this.editForm.value;
+      this.requestService.updateRequest(request).subscribe(
+        data => {
           this.router.navigate(['requests'])
-      },
-      error =>{console.log(error)}
-    )
+          this.alert.showError(data.message)
+        },
+        error => {
+          console.log(error)
+        }
+      )
+    }
+  }
+
+  isAdmin(){
+    return this.loginService.isAdmin()
+  }
+
+  public checkError = (controlName: string, errorName: string, form: FormGroup) => {
+    return form.controls[controlName].hasError(errorName);
   }
 }

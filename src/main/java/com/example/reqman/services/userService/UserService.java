@@ -26,7 +26,6 @@ public class UserService implements UserDetailsService, GetAuthentication {
 
     @Override
     public User getUser() throws UsernameNotFoundException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new UsernameNotFoundException("Not found: "));
     }

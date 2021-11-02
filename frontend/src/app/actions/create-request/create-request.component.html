@@ -31,13 +31,13 @@
         </mat-form-field>
       </p>
       <p>
-        <mat-form-field>
-          <mat-select placeholder="Status" formControlName="status">
-            <mat-option *ngFor="let status of statuses" [value]="status">
-              {{status}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+<!--        <mat-form-field>-->
+<!--          <mat-select placeholder="Status" formControlName="status">-->
+<!--            <mat-option *ngFor="let status of statuses" [value]="status">-->
+<!--              {{status}}-->
+<!--            </mat-option>-->
+<!--          </mat-select>-->
+<!--        </mat-form-field>-->
         <mat-form-field class="m-lg-3">
           <mat-select placeholder="Area of Interest" formControlName="areaOfInterest">
             <mat-option *ngFor="let area of areaOfInterests" [value]="area">
@@ -92,14 +92,14 @@
                 </mat-select>
                 <mat-error *ngIf="checkError('skill', 'required', skillForm)">Skill is required</mat-error>
               </mat-form-field>
-              <a class="float-left" mat-icon-button color="primary" aria-label="Add"
-                 (click)="addSKill()" matTooltip="Add">
-                <mat-icon>add_circle_outline</mat-icon>
-              </a>
               <a class="float-left" mat-icon-button color="primary" aria-label="Remove/clear"
                  (click)="removeSkill(i)" matTooltip="Remove">
                 <mat-icon>highlight_off</mat-icon>
               </a>
+            </a>
+            <a class="float-left" mat-icon-button color="primary" aria-label="Add"
+               (click)="addSKill()" matTooltip="Add">
+              <mat-icon>add_circle_outline</mat-icon>
             </a>
         </form>
         <button type="button" class="btn-light" mat-flat-button color="primary" aria-label="Add Resource"
@@ -110,7 +110,9 @@
       <p>
         <img mat-card-sm-image>
       </p>
-      <button type="submit" [disabled]="!addRequestForm.valid || !checkResources()">Create</button>
+      <button type="submit" [disabled]="!addRequestForm.valid || !checkResources()" mat-flat-button color="warn"
+              aria-label="Add Resource">Create
+      </button>
     </form>
   </div>
 </div>

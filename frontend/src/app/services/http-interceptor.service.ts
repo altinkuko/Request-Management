@@ -1,4 +1,4 @@
-import {Injectable, Injector, ProviderToken} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   HttpEvent,
   HttpHandler,
@@ -33,16 +33,9 @@ export class HttpInterceptorService implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((err) => {
         if (err.status === 403) {
-          this.popup.open(ErrorsComponent,{
-            data:'Unauthorized'
-          }).afterClosed().subscribe(()=>{
-            this.router.navigate([''])
-          })
-        }
-        if (err.status===404){
-          this.popup.open(ErrorsComponent,{
-            data:'Unauthorized'
-          }).afterClosed().subscribe(()=>{
+          this.popup.open(ErrorsComponent, {
+            data: 'Unauthorized'
+          }).afterClosed().subscribe(() => {
             this.router.navigate([''])
           })
         }

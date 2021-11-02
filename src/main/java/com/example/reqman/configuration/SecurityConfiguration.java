@@ -24,7 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService);
     }
 
     @Override
@@ -32,6 +32,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
         http.csrf().disable().
                 authorizeRequests()
                 .antMatchers("/login", "/").permitAll()
+                .antMatchers("/api/skill").hasRole("ADMIN")
                 .antMatchers("/api/**").hasAnyRole("ADMIN", "REQUESTER")
                 .and().formLogin().loginPage("http://localhost:4200/login")
                 .successForwardUrl("http://localhost:4200/")
